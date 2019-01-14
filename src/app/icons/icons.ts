@@ -73,3 +73,9 @@ const homeIconOptions: FontAwesomeOptions = {
   iconClasses: 'fa fa-home'
 };
 export const HomeIcon: FontAwesomeIcon = new FontAwesomeIcon(homeIconOptions);
+
+const realEstateIconOptions: FontAwesomeOptions = {
+  ...defaultFontAwesomeIconOptions,
+  iconClasses: 'fa fa-map-pin'
+};
+export const RealEstateIcon: FontAwesomeIcon = new FontAwesomeIcon(realEstateIconOptions);

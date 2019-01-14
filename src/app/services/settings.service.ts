@@ -8,15 +8,16 @@ import { Coordinate } from '../model/coordinate';
 })
 export class SettingsService {
 
+  private devHome: Coordinate = {
+    latitude: 49.591640,
+    longitude: 8.480848
+  };
+
   constructor(private http: HttpClient) { }
 
   getHome(): Observable<Coordinate> {
     if (isDevMode()) {
-      const coord: Coordinate = {
-        latitude: 49.591640,
-        longitude: 8.480848
-      };
-      return of(coord);
+      return of(this.devHome);
     }
     return this.http.get<Coordinate>('/api/v1/settings/home');
   }
