@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { latLng, tileLayer, LatLng, Map, Layer, marker, LayerGroup } from 'leaflet';
 import { SettingsService } from './services/settings.service';
-import { YellowIcon, GreenIcon, HomeIcon, RealEstateIcon, RedIcon } from './icons/icons';
-import { RealEstateService } from './services/real-estate.service';
-import { Coordinate } from './model/coordinate';
-import { OperationService } from './services/operation.service';
+import { coloredIcon } from './icons/icons';
+import { Coordinate } from './model/Coordinate';
+import { LayerService } from './services/layer.service';
+import { Feature } from './model/Feature';
 
 @Component({
   selector: 'app-root',
@@ -23,9 +23,6 @@ export class AppComponent implements OnInit {
   };
   layers: Layer[] = [];
   layersControl = {
-    // baseLayers: {
-    //   'Open Street Map': tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
-    // },
     overlays: {
     }
   };
@@ -36,23 +33,18 @@ export class AppComponent implements OnInit {
 
   constructor(
     private settingsService: SettingsService,
-    private operationService: OperationService,
-    private realEstateService: RealEstateService
+    private layerService: LayerService
   ) { }
 
   ngOnInit() {
     this.settingsService.getHome().subscribe(coords => {
       this.home = latLng(coords.latitude, coords.longitude);
-      this.layers.push(marker(this.home, {
-        icon: HomeIcon
-      }));
       if (this.map) {
         this.map.panTo(this.home);
       }
     });
 
-    this.initializeOperationLayer();
-    this.initializeRealEstateLayer();
+    this.initializeLayers();
   }
 
   onMapReady(map: Map) {
@@ -62,41 +54,45 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private initializeOperationLayer() {
-    const operationLayerGroup = new LayerGroup();
-    operationLayerGroup.addEventListener('add', () => {
-      this.operationService.getOperations().subscribe(operations => {
-        operations.forEach(operation => {
-          operationLayerGroup.addLayer(marker(this.llatLng(operation.location.coordinate), {
-            icon: RedIcon
-          }));
+  private initializeLayers() {
+    this.layerService.getLayers().subscribe(layers => {
+      layers.forEach(layer => {
+        const layerGroup = new LayerGroup();
+        layerGroup.addEventListener('add', () => {
+          this.layerService.getFeatures(layer.id).subscribe(features => {
+            features.forEach(feature => {
+              const m = marker(this.toLatLng(feature.coordinate), {
+                icon: coloredIcon(feature.color)
+              });
+              m.bindPopup(this.getPopup(feature));
+              layerGroup.addLayer(m);
+            });
+          });
         });
+        layerGroup.addEventListener('remove', () => {
+          layerGroup.clearLayers();
+        });
+        this.layersControl.overlays[layer.name] = layerGroup;
       });
     });
-    operationLayerGroup.addEventListener('remove', () => {
-      operationLayerGroup.clearLayers();
-    });
-    this.layersControl.overlays['Einsätze'] = operationLayerGroup;
   }
 
-  private initializeRealEstateLayer() {
-    const realEstateLayerGroup = new LayerGroup();
-    realEstateLayerGroup.addEventListener('add', () => {
-      this.realEstateService.getRealEstates().subscribe(realEstates => {
-        realEstates.forEach(realEstate => {
-          realEstateLayerGroup.addLayer(marker(this.llatLng(realEstate.address.coordinate), {
-            icon: RealEstateIcon
-          }));
-        });
-      });
-    });
-    realEstateLayerGroup.addEventListener('remove', () => {
-      realEstateLayerGroup.clearLayers();
-    });
-    this.layersControl.overlays['Objekte'] = realEstateLayerGroup;
+  private getPopup(feature: Feature): string {
+    return `
+    <div class="marker-popup">
+      <h1>${feature.name}</h1>
+      <p class="address">
+        ${feature.address.street}<br />
+        ${feature.address.zip} ${feature.address.town}
+      </p>
+      <p class="text">
+        ${feature.text}
+      </p>
+    </div>
+    `;
   }
 
-  private llatLng(coords: Coordinate): LatLng {
+  private toLatLng(coords: Coordinate): LatLng {
     return latLng(coords.latitude, coords.longitude);
   }
 }

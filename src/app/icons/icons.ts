@@ -79,3 +79,26 @@ const realEstateIconOptions: FontAwesomeOptions = {
   iconClasses: 'fa fa-map-pin'
 };
 export const RealEstateIcon: FontAwesomeIcon = new FontAwesomeIcon(realEstateIconOptions);
+
+export function coloredIcon(color: string): Icon {
+  switch (color.toLowerCase()) {
+    case 'black':
+      return BlackIcon;
+    case 'blue':
+      return BlueIcon;
+    case 'green':
+      return GreenIcon;
+    case 'grey':
+      return GreyIcon;
+    case 'orange':
+      return OrangeIcon;
+    case 'red':
+      return RedIcon;
+    case 'violet':
+      return VioletIcon;
+    case 'yellow':
+      return YellowIcon;
+    default:
+      return BlueIcon;
+  }
+}

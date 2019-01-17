@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OperationService } from './operation.service';
+import { LayerService } from './layer.service';
 
-describe('OperationService', () => {
+describe('LayerService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: OperationService = TestBed.get(OperationService);
+    const service: LayerService = TestBed.get(LayerService);
     expect(service).toBeTruthy();
   });
 });
