@@ -78,18 +78,26 @@ export class AppComponent implements OnInit {
   }
 
   private getPopup(feature: Feature): string {
-    return `
+    let popup = `
     <div class="marker-popup">
       <h1>${feature.name}</h1>
       <p class="address">
         ${feature.address.street}<br />
         ${feature.address.zip} ${feature.address.town}
       </p>
+      `;
+    if (feature.text) {
+      popup += `
       <p class="text">
         ${feature.text}
       </p>
+      `;
+    }
+    popup += `
     </div>
     `;
+
+    return popup;
   }
 
   private toLatLng(coords: Coordinate): LatLng {
