@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { latLng, tileLayer, LatLng, Map, Layer, marker, LayerGroup } from 'leaflet';
+import { latLng, tileLayer, LatLng, Map, Layer, marker, LayerGroup, Control } from 'leaflet';
 import { SettingsService } from './services/settings.service';
 import { coloredIcon } from './icons/icons';
 import { Coordinate } from './model/Coordinate';
@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
 
   onMapReady(map: Map) {
     this.map = map;
+    map.addControl(new Control.Scale())
     if (this.home) {
       this.map.panTo(this.home);
     }
