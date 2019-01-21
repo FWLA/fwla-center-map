@@ -78,15 +78,27 @@ export class AppComponent implements OnInit {
   }
 
   private getPopup(feature: Feature): string {
+
+    const street = feature.address.street || '';
+    let zip = feature.address.zip || '';
+    if (zip.length > 0) {
+      zip = zip + ' ';
+    }
+    let district = feature.address.district || '';
+    if (district.length > 0) {
+      district = ' - ' + district;
+    }
+    const town = feature.address.town || '';
+
     let popup = `
     <div class="marker-popup">
       <h1>${feature.name}</h1>
       <p class="address">
-        ${feature.address.street}<br />
-        ${feature.address.zip} ${feature.address.town}
+        ${street}<br />
+        ${zip}${town}${district}
       </p>
       `;
-    if (feature.text) {
+    if (feature.text && !(feature.name === feature.text)) {
       popup += `
       <p class="text">
         ${feature.text}
@@ -94,6 +106,9 @@ export class AppComponent implements OnInit {
       `;
     }
     popup += `
+      <p class="coordinates">
+        (${feature.coordinate.latitude}; ${feature.coordinate.longitude})
+      </p>
     </div>
     `;
 
