@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
 
   onMapReady(map: Map) {
     this.map = map;
-    map.addControl(new Control.Scale())
+    map.addControl(new Control.Scale());
     if (this.home) {
       this.map.panTo(this.home);
     }
