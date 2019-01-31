@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { latLng, tileLayer, LatLng, Map, Layer, marker, LayerGroup, Control } from 'leaflet';
-import { SettingsService } from './services/settings.service';
+import * as L from 'leaflet';
 import { coloredIcon } from './icons/icons';
 import { Coordinate } from './model/Coordinate';
-import { LayerService } from './services/layer.service';
 import { Feature } from './model/Feature';
+import { LayerService } from './services/layer.service';
+import { SettingsService } from './services/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -16,20 +16,20 @@ export class AppComponent implements OnInit {
   // Map options
   options = {
     layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
     ],
     zoom: 12,
-    center: latLng(0, 0)
+    center: L.latLng(0, 0)
   };
-  layers: Layer[] = [];
+  layers: L.Layer[] = [];
   layersControl = {
     overlays: {
     }
   };
 
   // General fields
-  home: LatLng;
-  map: Map;
+  home: L.LatLng;
+  map: L.Map;
 
   constructor(
     private settingsService: SettingsService,
@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.settingsService.getHome().subscribe(coords => {
-      this.home = latLng(coords.latitude, coords.longitude);
+      this.home = L.latLng(coords.latitude, coords.longitude);
       if (this.map) {
         this.map.panTo(this.home);
       }
@@ -47,33 +47,35 @@ export class AppComponent implements OnInit {
     this.initializeLayers();
   }
 
-  onMapReady(map: Map) {
+  onMapReady(map: L.Map) {
     this.map = map;
-    map.addControl(new Control.Scale());
+    map.addControl(new L.Control.Scale());
     if (this.home) {
       this.map.panTo(this.home);
     }
   }
 
   private initializeLayers() {
-    this.layerService.getLayers().subscribe(layers => {
-      layers.forEach(layer => {
-        const layerGroup = new LayerGroup();
-        layerGroup.addEventListener('add', () => {
-          this.layerService.getFeatures(layer.id).subscribe(features => {
-            features.forEach(feature => {
-              const m = marker(this.toLatLng(feature.coordinate), {
-                icon: coloredIcon(feature.color)
+    this.layerService.getLayers().subscribe(layerGroups => {
+      layerGroups.forEach(layerGroup => {
+        layerGroup.layers.forEach(layer => {
+          const leafletLayerGroup = new L.LayerGroup();
+          leafletLayerGroup.addEventListener('add', () => {
+            this.layerService.getFeatures(layer.id).subscribe(features => {
+              features.forEach(feature => {
+                const m = L.marker(this.latLng(feature.coordinate), {
+                  icon: coloredIcon(feature.color)
+                });
+                m.bindPopup(this.getPopup(feature));
+                leafletLayerGroup.addLayer(m);
               });
-              m.bindPopup(this.getPopup(feature));
-              layerGroup.addLayer(m);
             });
           });
+          leafletLayerGroup.addEventListener('remove', () => {
+            leafletLayerGroup.clearLayers();
+          });
+          this.layersControl.overlays[layer.name] = leafletLayerGroup;
         });
-        layerGroup.addEventListener('remove', () => {
-          layerGroup.clearLayers();
-        });
-        this.layersControl.overlays[layer.name] = layerGroup;
       });
     });
   }
@@ -116,7 +118,7 @@ export class AppComponent implements OnInit {
     return popup;
   }
 
-  private toLatLng(coords: Coordinate): LatLng {
-    return latLng(coords.latitude, coords.longitude);
+  private latLng(coords: Coordinate): L.LatLng {
+    return L.latLng(coords.latitude, coords.longitude);
   }
 }

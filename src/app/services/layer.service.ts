@@ -1,10 +1,10 @@
-import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Layer } from '../model/Layer';
+import { Injectable, isDevMode } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Feature } from '../model/Feature';
-import { layerSample } from '../samples/LayerSample';
+import { LayerGroup } from '../model/LayerGroup';
 import { featureSample } from '../samples/FeatureSample';
+import { layerGroupSample } from '../samples/LayerGroupSample';
 import { isProxy } from '../util/IsProxy';
 
 @Injectable({
@@ -14,11 +14,11 @@ export class LayerService {
 
   constructor(private http: HttpClient) { }
 
-  getLayers(): Observable<Layer[]> {
+  getLayers(): Observable<LayerGroup[]> {
     if (isDevMode() && !isProxy()) {
-      return of([layerSample]);
+      return of([layerGroupSample]);
     }
-    return this.http.get<Layer[]>('/api/v1/geo/layers');
+    return this.http.get<LayerGroup[]>('/api/v1/geo/layers');
   }
 
   getFeatures(layerId: string): Observable<Feature[]> {
