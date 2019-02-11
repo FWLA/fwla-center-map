@@ -5,6 +5,8 @@ import { Coordinate } from './model/Coordinate';
 import { Feature } from './model/Feature';
 import { LayerService } from './services/layer.service';
 import { SettingsService } from './services/settings.service';
+import { FeatureDetails } from './model/FeatureDetails';
+import { PointFeature } from './model/PointFeature';
 
 @Component({
   selector: 'app-root',
@@ -66,7 +68,14 @@ export class AppComponent implements OnInit {
                 const m = L.marker(this.latLng(feature.coordinate), {
                   icon: coloredIcon(feature.color)
                 });
-                m.bindPopup(this.getPopup(feature));
+                m.bindPopup('Loading...');
+                m.on('click', (e) => {
+                  const popup = (<L.Popup>e.target.getPopup());
+                  this.layerService.getFeatureDetails(layer.id, feature.id).subscribe(featureDetails => {
+                    popup.setContent(this.getPopup(featureDetails, feature));
+                    popup.update();
+                  });
+                });
                 leafletLayerGroup.addLayer(m);
               });
             });
@@ -80,40 +89,42 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private getPopup(feature: Feature): string {
+  private getPopup(featureDetails: FeatureDetails, feature?: PointFeature): string {
 
-    const street = feature.address.street || '';
-    let zip = feature.address.zip || '';
+    const street = featureDetails.address.street || '';
+    let zip = featureDetails.address.zip || '';
     if (zip.length > 0) {
       zip = zip + ' ';
     }
-    let district = feature.address.district || '';
+    let district = featureDetails.address.district || '';
     if (district.length > 0) {
       district = ' - ' + district;
     }
-    const town = feature.address.town || '';
+    const town = featureDetails.address.town || '';
 
     let popup = `
     <div class="marker-popup">
-      <h1>${feature.name}</h1>
+      <h1>${featureDetails.name}</h1>
       <p class="address">
         ${street}<br />
         ${zip}${town}${district}
       </p>
       `;
-    if (feature.text && !(feature.name === feature.text)) {
+    if (featureDetails.text && !(featureDetails.name === featureDetails.text)) {
       popup += `
       <p class="text">
-        ${feature.text}
+        ${featureDetails.text}
       </p>
       `;
     }
-    popup += `
-      <p class="coordinates">
-        (${feature.coordinate.latitude}; ${feature.coordinate.longitude})
-      </p>
-    </div>
-    `;
+    if (feature) {
+      popup += `
+        <p class="coordinates">
+          (${feature.coordinate.latitude}; ${feature.coordinate.longitude})
+        </p>
+      </div>
+      `;
+    }
 
     return popup;
   }

@@ -1,10 +1,6 @@
-import { Address } from './Address';
-import { Coordinate } from './Coordinate';
+import { FeatureType } from './FeatureType';
 
 export class Feature {
-  name: string;
-  text: string;
-  address: Address;
-  color: string;
-  coordinate: Coordinate;
+  id: string;
+  type: FeatureType;
 }
