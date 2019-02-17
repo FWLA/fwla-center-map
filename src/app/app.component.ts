@@ -91,25 +91,30 @@ export class AppComponent implements OnInit {
 
   private getPopup(featureDetails: FeatureDetails, feature?: PointFeature): string {
 
-    const street = featureDetails.address.street || '';
-    let zip = featureDetails.address.zip || '';
-    if (zip.length > 0) {
-      zip = zip + ' ';
-    }
-    let district = featureDetails.address.district || '';
-    if (district.length > 0) {
-      district = ' - ' + district;
-    }
-    const town = featureDetails.address.town || '';
-
     let popup = `
     <div class="marker-popup">
       <h1>${featureDetails.name}</h1>
-      <p class="address">
-        ${street}<br />
-        ${zip}${town}${district}
-      </p>
       `;
+      if (featureDetails.address) {
+
+        const street = featureDetails.address.street || '';
+        let zip = featureDetails.address.zip || '';
+        if (zip.length > 0) {
+          zip = zip + ' ';
+        }
+        let district = featureDetails.address.district || '';
+        if (district.length > 0) {
+          district = ' - ' + district;
+        }
+        const town = featureDetails.address.town || '';
+
+        popup += `
+        <p class="address">
+          ${street}<br />
+          ${zip}${town}${district}
+        </p>
+        `;
+      }
     if (featureDetails.text && !(featureDetails.name === featureDetails.text)) {
       popup += `
       <p class="text">
