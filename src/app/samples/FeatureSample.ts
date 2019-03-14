@@ -6,5 +6,6 @@ export const pointFeatureSample: PointFeature = {
   id: 'featureId',
   color: 'red',
   coordinate: coordinateSample,
+  tooltip: 'feature',
   type: FeatureType.POINT
 };

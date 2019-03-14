@@ -76,6 +76,9 @@ export class AppComponent implements OnInit {
                     popup.update();
                   });
                 });
+                if (feature.tooltip !== null) {
+                  m.bindTooltip(feature.tooltip);
+                }
                 leafletLayerGroup.addLayer(m);
               });
             });
