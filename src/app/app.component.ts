@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Feature, Geometry } from 'geojson';
 import * as L from 'leaflet';
 import { coloredIcon } from './icons/icons';
 import { Coordinate } from './model/Coordinate';
-import { Feature } from './model/Feature';
+import { FeatureDetails } from './model/FeatureDetails';
 import { LayerService } from './services/layer.service';
 import { SettingsService } from './services/settings.service';
-import { FeatureDetails } from './model/FeatureDetails';
-import { PointFeature } from './model/PointFeature';
 
 @Component({
   selector: 'app-root',
@@ -63,24 +62,28 @@ export class AppComponent implements OnInit {
         layerGroup.layers.forEach(layer => {
           const leafletLayerGroup = new L.LayerGroup();
           leafletLayerGroup.addEventListener('add', () => {
-            this.layerService.getFeatures(layer.id).subscribe(features => {
-              features.forEach(feature => {
-                const m = L.marker(this.latLng(feature.coordinate), {
-                  icon: coloredIcon(feature.color)
-                });
-                m.bindPopup('Loading...');
-                m.on('click', (e) => {
-                  const popup = (<L.Popup>e.target.getPopup());
-                  this.layerService.getFeatureDetails(layer.id, feature.id).subscribe(featureDetails => {
-                    popup.setContent(this.getPopup(featureDetails, feature));
-                    popup.update();
+            this.layerService.getFeatures(layer.id).subscribe(featureCollection => {
+              var geoJsonLayer = L.geoJSON(featureCollection, {
+                pointToLayer: (feature, latLng) => {
+                  return L.marker(latLng, {
+                    icon: coloredIcon(feature.properties.color)
                   });
-                });
-                if (feature.tooltip !== null) {
-                  m.bindTooltip(feature.tooltip);
+                },
+                onEachFeature: (feature, featureLayer) => {
+                  featureLayer.bindPopup('Loading...');
+                  featureLayer.on('click', (e) => {
+                    const popup = (<L.Popup>e.target.getPopup());
+                    this.layerService.getFeatureDetails(layer.id, <string> feature.id).subscribe(featureDetails => {
+                      popup.setContent(this.getPopup(featureDetails, feature));
+                      popup.update();
+                    })
+                  })
+                  if (feature.properties.name) {
+                    featureLayer.bindTooltip(feature.properties.name);
+                  }
                 }
-                leafletLayerGroup.addLayer(m);
               });
+              leafletLayerGroup.addLayer(geoJsonLayer);
             });
           });
           leafletLayerGroup.addEventListener('remove', () => {
@@ -92,7 +95,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  private getPopup(featureDetails: FeatureDetails, feature?: PointFeature): string {
+  private getPopup(featureDetails: FeatureDetails, feature?: Feature<Geometry, any>): string {
 
     let popup = `
     <div class="marker-popup">
@@ -125,10 +128,10 @@ export class AppComponent implements OnInit {
       </p>
       `;
     }
-    if (feature) {
+    if (feature.geometry.type === 'Point') {
       popup += `
         <p class="coordinates">
-          (${feature.coordinate.latitude}; ${feature.coordinate.longitude})
+          (${feature.geometry.coordinates[1]}; ${feature.geometry.coordinates[0]})
         </p>
       </div>
       `;
