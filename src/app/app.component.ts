@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Feature, Geometry } from 'geojson';
 import * as L from 'leaflet';
-import { coloredIcon } from './icons/icons';
+import { coloredIcon, DefaultIcon } from './icons/icons';
 import { Coordinate } from './model/Coordinate';
 import { FeatureDetails } from './model/FeatureDetails';
 import { LayerService } from './services/layer.service';
@@ -65,8 +65,12 @@ export class AppComponent implements OnInit {
             this.layerService.getFeatures(layer.id).subscribe(featureCollection => {
               var geoJsonLayer = L.geoJSON(featureCollection, {
                 pointToLayer: (feature, latLng) => {
+                  var icon = DefaultIcon;
+                  if (feature.properties.color) {
+                    icon = coloredIcon(feature.properties.color);
+                  }
                   return L.marker(latLng, {
-                    icon: coloredIcon(feature.properties.color)
+                    icon: icon
                   });
                 },
                 onEachFeature: (feature, featureLayer) => {
