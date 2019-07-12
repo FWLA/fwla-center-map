@@ -74,14 +74,16 @@ export class AppComponent implements OnInit {
                   });
                 },
                 onEachFeature: (feature, featureLayer) => {
-                  featureLayer.bindPopup('Loading...');
-                  featureLayer.on('click', (e) => {
-                    const popup = (<L.Popup>e.target.getPopup());
-                    this.layerService.getFeatureDetails(layer.id, <string> feature.id).subscribe(featureDetails => {
-                      popup.setContent(this.getPopup(featureDetails, feature));
-                      popup.update();
-                    })
-                  })
+                  if (feature.properties.hasDetails) {
+                    featureLayer.bindPopup('Loading...');
+                    featureLayer.on('click', (e) => {
+                      const popup = (<L.Popup>e.target.getPopup());
+                      this.layerService.getFeatureDetails(layer.id, <string> feature.id).subscribe(featureDetails => {
+                        popup.setContent(this.getPopup(featureDetails, feature));
+                        popup.update();
+                      });
+                    });
+                  }
                   if (feature.properties.name) {
                     featureLayer.bindTooltip(feature.properties.name);
                   }
