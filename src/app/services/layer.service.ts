@@ -30,6 +30,13 @@ export class LayerService {
     return this.http.get<FeatureCollection>('/api/v2/geo/layers/' + layerId);
   }
 
+  updateLayer(layerId: string, geojson: FeatureCollection): Observable<FeatureCollection> {
+    if (isDevMode() && !isProxy()) {
+      return of(featureCollectionSample);
+    }
+    return this.http.patch<FeatureCollection>('/api/v2/geo/layers/' + layerId, geojson);
+  }
+
   getFeatureDetails(layerId: string, featureId: string): Observable<FeatureDetails> {
     if (isDevMode() && !isProxy()) {
       return of(featureDetailsSample);
