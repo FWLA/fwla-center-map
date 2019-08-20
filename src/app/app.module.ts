@@ -1,12 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
-import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { MapComponent } from './map/map.component';
 import { EditComponent } from './edit/edit.component';
+import { LayerControlComponent } from './layer-control/layer-control.component';
+import { MapComponent } from './map/map.component';
 
 const appRoutes: Routes = [
   {
@@ -29,7 +31,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     MapComponent,
-    EditComponent
+    EditComponent,
+    LayerControlComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +47,14 @@ const appRoutes: Routes = [
     LeafletDrawModule.forRoot()
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    LayerControlComponent
+  ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private injector: Injector) {
+    const el = createCustomElement(LayerControlComponent, { injector: this.injector });
+    customElements.define('layer-control', el);
+  }
+}

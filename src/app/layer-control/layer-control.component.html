@@ -1,0 +1,31 @@
+<div class="leaflet-control-layers" aria-haspopup="true" [ngClass]="{'leaflet-control-layers-expanded': !collapsed}" (mouseenter)="onContainerMouseEnter()" (mouseleave)="collapse()">
+  <a href="#" title="Layers" class="leaflet-control-layers-toggle" (click)="onLinkClick()" (focus)="onLinkFocus()"></a>
+  <section class="leaflet-control-layers-list">
+    <div class="leaflet-control-layers-overlays">
+      <h1 *ngIf="layerData.operation.length > 0">Einsatz</h1>
+      <div *ngFor="let layerGroup of layerData.operation" class="leaflet-control-layers-group">
+        <label *ngFor="let layer of layerGroup.layers">
+          <div>
+            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" /><span>&nbsp;{{layer.name}}</span>
+          </div>
+        </label>
+      </div>
+      <h1 *ngIf="layerData.info.length > 0">Info</h1>
+      <div *ngFor="let layerGroup of layerData.info" class="leaflet-control-layers-group">
+        <label *ngFor="let layer of layerGroup.layers">
+          <div>
+            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" /><span>&nbsp;{{layer.name}}</span>
+          </div>
+        </label>
+      </div>
+      <h1 *ngIf="layerData.archive.length > 0">Archiv</h1>
+      <div *ngFor="let layerGroup of layerData.archive" class="leaflet-control-layers-group">
+        <label *ngFor="let layer of layerGroup.layers">
+          <div>
+            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" /><span>&nbsp;{{layer.name}}</span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </section>
+</div>
