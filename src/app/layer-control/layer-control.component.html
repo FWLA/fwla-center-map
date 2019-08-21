@@ -6,7 +6,13 @@
       <div *ngFor="let layerGroup of layerData.operation" class="leaflet-control-layers-group">
         <label *ngFor="let layer of layerGroup.layers">
           <div>
-            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" /><span>&nbsp;{{layer.name}}</span>
+            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" />
+            <span>
+              &nbsp;{{layer.name}}
+              <span class="leaflet-control-layers-edit" *ngIf="layer.editable">
+                <a href="#/edit/{{layer.id}}">[Edit]</a>
+              </span>
+            </span>
           </div>
         </label>
       </div>
@@ -14,7 +20,13 @@
       <div *ngFor="let layerGroup of layerData.info" class="leaflet-control-layers-group">
         <label *ngFor="let layer of layerGroup.layers">
           <div>
-            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" /><span>&nbsp;{{layer.name}}</span>
+            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" />
+            <span>
+              &nbsp;{{layer.name}}
+              <span class="leaflet-control-layers-edit" *ngIf="layer.editable">
+                <a href="#/edit/{{layer.id}}">[Edit]</a>
+              </span>
+            </span>
           </div>
         </label>
       </div>
@@ -22,7 +34,13 @@
       <div *ngFor="let layerGroup of layerData.archive" class="leaflet-control-layers-group">
         <label *ngFor="let layer of layerGroup.layers">
           <div>
-            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" /><span>&nbsp;{{layer.name}}</span>
+            <input type="checkbox" class="leaflet-control-layers-selector" (change)="toggle($event, layer)" />
+            <span>
+              &nbsp;{{layer.name}}
+              <span class="leaflet-control-layers-edit" *ngIf="layer.editable">
+                <a href="#/edit/{{layer.id}}">[Edit]</a>
+              </span>
+            </span>
           </div>
         </label>
       </div>

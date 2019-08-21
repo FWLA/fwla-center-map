@@ -31,8 +31,8 @@ interface DataType {
 export class LayerControlComponent implements OnInit {
 
   @Input() map: L.Map;
-  private collapsed = true;
-  private layerData: DataType = {
+  collapsed = true;
+  layerData: DataType = {
     operation: [],
     info: [],
     archive: []
@@ -123,6 +123,8 @@ export class LayerControlComponent implements OnInit {
     } else {
       this.map.removeLayer(layer.leafletLayer);
     }
+    // keep control expanded
+    this.collapsed = false;
   }
 
   expand() {
