@@ -15,6 +15,7 @@
     "@angular/common": "~8.1.0",
     "@angular/compiler": "~8.1.0",
     "@angular/core": "~8.1.0",
+    "@angular/elements": "^8.1.0",
     "@angular/forms": "~8.1.0",
     "@angular/platform-browser": "~8.1.0",
     "@angular/platform-browser-dynamic": "~8.1.0",
@@ -26,7 +27,8 @@
     "leaflet": "^1.5.1",
     "leaflet-draw": "^1.0.4",
     "rxjs": "~6.5.2",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "document-register-element": "^1.7.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.801.0",
