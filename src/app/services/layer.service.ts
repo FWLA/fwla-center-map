@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
 import { FeatureCollection } from 'geojson';
 import { Observable, of } from 'rxjs';
@@ -21,6 +21,15 @@ export class LayerService {
       return of([layerGroupSample]);
     }
     return this.http.get<LayerGroup[]>('/api/v2/geo/layers');
+  }
+
+  getEditableLayers(): Observable<LayerGroup[]> {
+    if (isDevMode() && !isProxy()) {
+      return of([layerGroupSample]);
+    }
+    return this.http.get<LayerGroup[]>('/api/v2/geo/layers', {
+      params: new HttpParams().set('editable', 'true')
+    });
   }
 
   getFeatures(layerId: string): Observable<FeatureCollection> {

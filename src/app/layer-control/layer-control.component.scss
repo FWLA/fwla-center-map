@@ -4,8 +4,12 @@
     margin-bottom: 10px;
   }
 
-  .leaflet-control-layers-group {
-    margin: 0;
-    margin-bottom: 10px;
+  .leaflet-control-layers-list {
+    margin: 10px;
+
+    .leaflet-control-layers-group {
+      margin: 0;
+      margin-bottom: 10px;
+    }
   }
 }

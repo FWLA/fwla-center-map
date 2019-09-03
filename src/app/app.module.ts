@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { AppComponent } from './app.component';
+import { EditLayerControlComponent } from './edit-layer-control/edit-layer-control.component';
 import { EditComponent } from './edit/edit.component';
 import { LayerControlComponent } from './layer-control/layer-control.component';
 import { MapComponent } from './map/map.component';
@@ -32,7 +33,8 @@ const appRoutes: Routes = [
     AppComponent,
     MapComponent,
     EditComponent,
-    LayerControlComponent
+    LayerControlComponent,
+    EditLayerControlComponent
   ],
   imports: [
     BrowserModule,
@@ -49,12 +51,18 @@ const appRoutes: Routes = [
   providers: [],
   bootstrap: [AppComponent],
   entryComponents: [
-    LayerControlComponent
+    LayerControlComponent,
+    EditLayerControlComponent
   ]
 })
 export class AppModule {
   constructor(private injector: Injector) {
-    const el = createCustomElement(LayerControlComponent, { injector: this.injector });
+    // LayerControl
+    var el = createCustomElement(LayerControlComponent, { injector: this.injector });
     customElements.define('layer-control', el);
+
+    // EditLayerControl
+    el = createCustomElement(EditLayerControlComponent, { injector: this.injector });
+    customElements.define('edit-layer-control', el);
   }
 }

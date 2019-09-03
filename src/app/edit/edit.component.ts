@@ -4,6 +4,7 @@ import * as L from 'leaflet';
 import { DefaultIcon } from '../icons/icons';
 import { LayerService } from '../services/layer.service';
 import { SettingsService } from '../services/settings.service';
+import { EditLayerControl } from '../edit-layer-control/EditLayerControl';
 
 @Component({
   selector: 'app-edit',
@@ -75,6 +76,9 @@ export class EditComponent implements OnInit {
   onMapReady(map: L.Map) {
     this.map = map;
     map.addControl(new L.Control.Scale());
+    map.addControl(new EditLayerControl({
+      position: 'topright'
+    }));
     map.addControl(new L.Control.Draw(this.drawOptions));
     if (this.home) {
       this.map.panTo(this.home);
