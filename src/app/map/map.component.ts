@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { LayerControl } from '../layer-control/LayerControl';
 import { SettingsService } from '../services/settings.service';
+import '../../../node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js';
 
 @Component({
   selector: 'app-map',
@@ -44,6 +45,16 @@ export class MapComponent implements OnInit {
     map.addControl(new LayerControl({
       position: 'topright'
     }));
+    L.control.browserPrint({
+      title: 'Drucken',
+      documentTitle: 'FWLA Center Map',
+      position: 'topleft',
+      printModes: [
+        L.control.browserPrint.mode.portrait('Hochformat', 'A4'),
+        L.control.browserPrint.mode.landscape('Querformat', 'A4'),
+        L.control.browserPrint.mode.custom('Bereich auswählen', 'A4')
+      ]
+    }).addTo(map);
     if (this.home) {
       this.map.panTo(this.home);
     }
