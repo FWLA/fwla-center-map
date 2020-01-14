@@ -50,8 +50,6 @@ export class MapComponent implements OnInit {
       documentTitle: 'FWLA Center Map',
       position: 'topleft',
       printModes: [
-        L.control.browserPrint.mode.portrait('Hochformat', 'A4'),
-        L.control.browserPrint.mode.landscape('Querformat', 'A4'),
         L.control.browserPrint.mode.custom('Bereich auswählen', 'A4')
       ]
     }).addTo(map);
