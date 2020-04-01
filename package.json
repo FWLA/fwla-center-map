@@ -1,6 +1,6 @@
 {
   "name": "fwla-center-map",
-  "version": "0.1.8",
+  "version": "0.1.9-SNAPSHOT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
